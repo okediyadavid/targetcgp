@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Target Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            margin: 50px auto;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            background: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .scenario {
+            text-align: left;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .scenario h3 {
+            color: #007bff;
+        }
+
+        .clear-btn {
+            background: #dc3545;
+        }
+
+        .clear-btn:hover {
+            background: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>CGPA Target Calculator</h2>
+
+        <label for="currentCGPA">Current CGPA:</label>
+        <input type="number" id="currentCGPA" step="0.01" placeholder="e.g. 4.49" required>
+
+        <label for="completedUnits">Total Completed Credit Units:</label>
+        <input type="number" id="completedUnits" step="1" placeholder="e.g. 125" required>
+
+        <label for="targetCGPA">Target CGPA:</label>
+        <input type="number" id="targetCGPA" step="0.01" placeholder="e.g. 4.70" required>
+
+        <label for="futureUnits">Total Future Semester Credit Units:</label>
+        <input type="number" id="futureUnits" step="1" placeholder="e.g. 38" required>
+
+        <button onclick="calculateRequiredGPA()">Calculate Required GPA</button>
+        <button class="clear-btn" onclick="clearForm()">Clear</button>
+
+        <div class="result" id="result"></div>
+
+        <div class="scenario">
+            <h3>Example Scenarios:</h3>
+            <p>🔹 **Scenario 1:** A student with **4.40 CGPA**, **100 completed units**, and **40 more units** wants to reach **4.50 CGPA**. <br> ✅ **Needs a 4.95 GPA in next semesters.**</p>
+            <p>🔹 **Scenario 2:** A student with **2.80 CGPA**, **110 completed units**, and **36 more units** wants to reach **3.20 CGPA**. <br> ✅ **Needs a 3.61 GPA in next semesters.**</p>
+            <p>🔹 **Scenario 3 (Impossible Goal):** A student with **2.50 CGPA**, **120 completed units**, and **40 more units** wants to reach **4.50 CGPA**. <br> ❌ **Impossible! Would require a GPA higher than 5.00.**</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateRequiredGPA() {
+            let currentCGPA = parseFloat(document.getElementById("currentCGPA").value);
+            let completedUnits = parseFloat(document.getElementById("completedUnits").value);
+            let targetCGPA = parseFloat(document.getElementById("targetCGPA").value);
+            let futureUnits = parseFloat(document.getElementById("futureUnits").value);
+
+            if (isNaN(currentCGPA) || isNaN(completedUnits) || isNaN(targetCGPA) || isNaN(futureUnits) || completedUnits <= 0 || futureUnits <= 0) {
+                document.getElementById("result").innerHTML = "⚠️ Please enter valid numerical values!";
+                return;
+            }
+
+            // Calculate the required total grade points
+            let currentGradePoints = currentCGPA * completedUnits;
+            let requiredTotalGradePoints = targetCGPA * (completedUnits + futureUnits);
+            let requiredNewGradePoints = requiredTotalGradePoints - currentGradePoints;
+
+            // Calculate required GPA per semester
+            let requiredGPA = requiredNewGradePoints / futureUnits;
+
+            // Display result
+            if (requiredGPA > 5.00) {
+                document.getElementById("result").innerHTML = `❌ It is impossible to achieve a ${targetCGPA} CGPA as it requires a GPA of ${requiredGPA.toFixed(2)}, which exceeds 5.00.`;
+            } else {
+                document.getElementById("result").innerHTML = `✅ To reach a CGPA of ${targetCGPA}, you need an average GPA of <strong>${requiredGPA.toFixed(2)}</strong> in the next semesters.`;
+            }
+        }
+
+        function clearForm() {
+            document.getElementById("currentCGPA").value = "";
+            document.getElementById("completedUnits").value = "";
+            document.getElementById("targetCGPA").value = "";
+            document.getElementById("futureUnits").value = "";
+            document.getElementById("result").innerHTML = "";
+        }
+    </script>
+</body>
+</html>
